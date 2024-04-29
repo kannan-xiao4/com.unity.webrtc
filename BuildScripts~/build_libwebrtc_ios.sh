@@ -6,8 +6,8 @@ then
 fi
 
 export COMMAND_DIR=$(cd $(dirname $0); pwd)
-export PATH="$(pwd)/depot_tools:$PATH"
-export WEBRTC_VERSION=5845
+export PATH="$(pwd)/depot_tools:$(pwd)/depot_tools/python-bin:$PATH"
+export WEBRTC_VERSION=6099
 export OUTPUT_DIR="$(pwd)/out"
 export ARTIFACTS_DIR="$(pwd)/artifacts"
 export PYTHON3_BIN="$(pwd)/depot_tools/python-bin/python3"
@@ -18,6 +18,12 @@ then
   cd src
   sudo sh -c 'echo 127.0.1.1 $(hostname) >> /etc/hosts'
   sudo git config --system core.longpaths true
+  git checkout "refs/remotes/branch-heads/$WEBRTC_VERSION"
+  cd ..
+  gclient sync -D --force --reset
+else
+  # fetch and init config on only first time
+  cd src
   git checkout "refs/remotes/branch-heads/$WEBRTC_VERSION"
   cd ..
   gclient sync -D --force --reset
@@ -36,15 +42,15 @@ patch -N "src/sdk/BUILD.gn" < "$COMMAND_DIR/patches/add_objc_deps.patch"
 # Fix SetRawImagePlanes() in LibvpxVp8Encoder
 patch -N "src/modules/video_coding/codecs/vp8/libvpx_vp8_encoder.cc" < "$COMMAND_DIR/patches/libvpx_vp8_encoder.patch"
 
-# use included python
-export PATH="$(pwd)/depot_tools/bootstrap-3.8.0.chromium.8_bin/python/bin:$PATH"
-
 mkdir -p "$ARTIFACTS_DIR/lib"
+
+outputDir=""
 
 for is_debug in "true" "false"
 do
   for target_cpu in "arm64" "x64"
   do
+    outputDir="${OUTPUT_DIR}_${is_debug}_${target_cpu}"
     # generate ninja files
     # 
     # note: `treat_warnings_as_errors=false` is for avoiding LLVM warning.
@@ -52,7 +58,7 @@ do
     #       See below for details.
     #       https://bugs.chromium.org/p/webrtc/issues/detail?id=11729
     #
-    gn gen "$OUTPUT_DIR" --root="src" \
+    gn gen "$outputDir" --root="src" \
       --args="is_debug=${is_debug} \
       target_os=\"ios\" \
       target_cpu=\"${target_cpu}\" \
@@ -61,15 +67,14 @@ do
       treat_warnings_as_errors=false \
       ios_enable_code_signing=false \
       rtc_include_tests=false \
-      rtc_build_examples=false \
-      use_cxx17=true"
+      rtc_build_examples=false"
 
     # build static library
-    ninja -C "$OUTPUT_DIR" webrtc
+    ninja -C "$outputDir" webrtc
 
     # copy static library
     mkdir -p "$ARTIFACTS_DIR/lib/${target_cpu}"
-    cp "$OUTPUT_DIR/obj/libwebrtc.a" "$ARTIFACTS_DIR/lib/${target_cpu}/"
+    cp "$outputDir/obj/libwebrtc.a" "$ARTIFACTS_DIR/lib/${target_cpu}/"
   done
 
   filename="libwebrtc.a"
@@ -88,12 +93,12 @@ do
 done
 
 "$PYTHON3_BIN" "./src/tools_webrtc/libs/generate_licenses.py" \
-  --target :webrtc "$OUTPUT_DIR" "$OUTPUT_DIR"
+  --target :webrtc "$outputDir" "$outputDir"
 
 cd src
 find . -name "*.h" -print | cpio -pd "$ARTIFACTS_DIR/include"
 
-cp "$OUTPUT_DIR/LICENSE.md" "$ARTIFACTS_DIR"
+cp "$outputDir/LICENSE.md" "$ARTIFACTS_DIR"
 
 # create zip
 cd "$ARTIFACTS_DIR"
