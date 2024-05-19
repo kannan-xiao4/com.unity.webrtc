@@ -6,7 +6,7 @@ if not exist depot_tools (
 
 set COMMAND_DIR=%~dp0
 set PATH=%cd%\depot_tools;%cd%\depot_tools\python-bin;%PATH%
-set WEBRTC_VERSION=6099
+set WEBRTC_VERSION=6367
 set DEPOT_TOOLS_WIN_TOOLCHAIN=0
 set GYP_GENERATORS=ninja,msvs-ninja
 set GYP_MSVS_VERSION=2022
@@ -54,7 +54,7 @@ for %%i in (x64) do (
 
     rem generate ninja for release
     call gn.bat gen "!outputDir!" --root="src" ^
-      --args="is_debug=%%j is_clang=true target_cpu=\"%%i\" use_custom_libcxx=false rtc_include_tests=false rtc_build_examples=false rtc_use_h264=false symbol_level=0 enable_iterator_debugging=false"
+      --args="is_debug=%%j is_clang=true target_cpu=\"%%i\" use_custom_libcxx=false rtc_include_tests=false rtc_build_examples=false rtc_build_tools=false rtc_use_h264=false symbol_level=0 enable_iterator_debugging=false"
 
     rem build
     call ninja.bat -C !outputDir! webrtc
