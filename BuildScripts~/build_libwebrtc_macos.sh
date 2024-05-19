@@ -7,7 +7,7 @@ fi
 
 export COMMAND_DIR=$(cd $(dirname $0); pwd)
 export PATH="$(pwd)/depot_tools:$(pwd)/depot_tools/python-bin:$PATH"
-export WEBRTC_VERSION=6099
+export WEBRTC_VERSION=6367
 export OUTPUT_DIR="$(pwd)/out"
 export ARTIFACTS_DIR="$(pwd)/artifacts"
 export PYTHON3_BIN="$(pwd)/depot_tools/python-bin/python3"
@@ -34,7 +34,7 @@ patch -N "src/BUILD.gn" < "$COMMAND_DIR/patches/add_jsoncpp.patch"
 
 # disable GCD taskqueue, use stdlib taskqueue instead
 # This is because GCD cannot measure with UnityProfiler
-patch -N "src/api/task_queue/BUILD.gn" < "$COMMAND_DIR/patches/disable_task_queue_gcd.patch"
+# patch -N "src/api/task_queue/BUILD.gn" < "$COMMAND_DIR/patches/disable_task_queue_gcd.patch"
 
 # add objc library to use videotoolbox
 patch -N "src/sdk/BUILD.gn" < "$COMMAND_DIR/patches/add_objc_deps.patch"
@@ -53,18 +53,20 @@ do
     outputDir="${OUTPUT_DIR}_${is_debug}_${target_cpu}"
     # generate ninja files
     gn gen "$outputDir" --root="src" \
-      --args="is_debug=${is_debug} \
+      --args=" \
+      enable_iterator_debugging=false \
+      is_debug=${is_debug} \
+      is_component_build=false \
       target_os=\"mac\"  \
       target_cpu=\"${target_cpu}\" \
-      use_custom_libcxx=false \
       rtc_include_tests=false \
       rtc_build_examples=false \
+      rtc_build_tools=false \
       rtc_use_h264=false \
+      rtc_use_x11=false \
       symbol_level=0 \
-      enable_iterator_debugging=false \
-      is_component_build=false \
-      use_rtti=true \
-      rtc_use_x11=false"
+      use_custom_libcxx=false \
+      use_rtti=true"
 
     # build static library
     ninja -C "$outputDir" webrtc
