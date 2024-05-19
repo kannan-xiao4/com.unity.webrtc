@@ -46,11 +46,13 @@ do
   do
     outputDir="${OUTPUT_DIR}_${is_debug}_${target_cpu}"
     # use_custom_libcxx=false is failed because install sysroot does not supoort c++11
-    args="is_debug=${is_debug} \
+    args=" \
       enable_iterator_debugging=false \
       is_component_build=false \
+      is_debug=${is_debug} \
       rtc_include_tests=false \
       rtc_build_examples=false \
+      rtc_build_tools=false \
       rtc_use_h264=false \
       rtc_use_x11=false \
       symbol_level=0 \

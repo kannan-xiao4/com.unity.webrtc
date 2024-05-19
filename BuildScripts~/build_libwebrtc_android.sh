@@ -34,19 +34,8 @@ fi
 # Add jsoncpp
 patch -N "src/BUILD.gn" < "$COMMAND_DIR/patches/add_jsoncpp.patch"
 
-# Add visibility libunwind
-patch -N "src/buildtools/third_party/libunwind/BUILD.gn" < "$COMMAND_DIR/patches/add_visibility_libunwind.patch"
-
-# Add deps libunwind
-patch -N "src/build/config/BUILD.gn" < "$COMMAND_DIR/patches/add_deps_libunwind.patch"
-
 # Add -mno-outline-atomics flag
 patch -N "src/build/config/compiler/BUILD.gn" < "$COMMAND_DIR/patches/add_nooutlineatomics_flag.patch"
-
-# downgrade to JDK8 because Unity supports OpenJDK version 1.8.
-# https://docs.unity3d.com/Manual/android-sdksetup.html
-patch -N "src/build/android/gyp/compile_java.py" < "$COMMAND_DIR/patches/downgradeJDKto8_compile_java.patch"
-patch -N "src/build/android/gyp/turbine.py" < "$COMMAND_DIR/patches/downgradeJDKto8_turbine.patch"
 
 # Fix SetRawImagePlanes() in LibvpxVp8Encoder
 patch -N "src/modules/video_coding/codecs/vp8/libvpx_vp8_encoder.cc" < "$COMMAND_DIR/patches/libvpx_vp8_encoder.patch"
@@ -71,17 +60,19 @@ do
     # generate ninja files
     # use `treat_warnings_as_errors` option to avoid deprecation warnings
     gn gen "$outputDir" --root="src" \
-      --args="is_debug=${is_debug} \
+      --args=" \
+      exclude_unwind_tables=true \
+      is_component_build=false \
+      is_debug=${is_debug} \
       is_java_debug=${is_debug} \
-      target_os=\"android\" \
-      target_cpu=\"${target_cpu}\" \
       rtc_use_h264=false \
       rtc_include_tests=false \
       rtc_build_examples=false \
-      is_component_build=false \
-      use_rtti=true \
-      use_custom_libcxx=false \
+      rtc_build_tools=false \
+      target_os=\"android\" \
+      target_cpu=\"${target_cpu}\" \
       treat_warnings_as_errors=false \
+      use_rtti=true \
       use_errorprone_java_compiler=false"
 
     # build static library
@@ -107,15 +98,16 @@ do
     --build-dir $aarOutputDir \
     --output $aarOutputDir/libwebrtc.aar \
     --arch arm64-v8a x86_64 \
-    --extra-gn-args "is_debug=${is_debug} \
+    --extra-gn-args " \
+      is_debug=${is_debug} \
       is_java_debug=${is_debug} \
+      is_component_build=false \
       rtc_use_h264=false \
       rtc_include_tests=false \
       rtc_build_examples=false \
-      is_component_build=false \
-      use_rtti=true \
-      use_custom_libcxx=false \
+      rtc_build_tools=false \
       treat_warnings_as_errors=false \
+      use_rtti=true \
       use_errorprone_java_compiler=false"
 
   filename="libwebrtc.aar"
