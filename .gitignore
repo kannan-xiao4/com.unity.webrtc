@@ -222,6 +222,7 @@ upm-ci~/
 Plugin~/webrtc*/*
 WebRTC~/CodeCoverage
 WebRTC~/TestResults-*
+WebRTC~/Logs
 *.dbmdl
 *.dbproj.schemaview
 *.jfm
@@ -363,6 +364,7 @@ Plugin~/WebRTCPluginTest/webrtc-test.xcodeproj/*
 [Tt]emp/
 [Oo]bj/
 [Bb]uild/
+[Uu]serSettings/
 
 # Exclude Documentation folder
 !Documentation~
