@@ -29,6 +29,7 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+*.apk
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -221,6 +222,7 @@ upm-ci~/
 Plugin~/webrtc*/*
 WebRTC~/CodeCoverage
 WebRTC~/TestResults-*
+WebRTC~/Logs
 *.dbmdl
 *.dbproj.schemaview
 *.jfm
@@ -362,6 +364,7 @@ Plugin~/WebRTCPluginTest/webrtc-test.xcodeproj/*
 [Tt]emp/
 [Oo]bj/
 [Bb]uild/
+[Uu]serSettings/
 
 # Exclude Documentation folder
 !Documentation~
