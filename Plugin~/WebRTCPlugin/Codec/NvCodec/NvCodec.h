@@ -3,6 +3,7 @@
 #include <cuda.h>
 #include <vector>
 
+#include <api/environment/environment.h>
 #include <api/video_codecs/h264_profile_level_id.h>
 #include <api/video_codecs/sdp_video_format.h>
 #include <api/video_codecs/video_decoder.h>
@@ -74,7 +75,7 @@ namespace webrtc
         ~NvDecoderFactory() override;
 
         std::vector<webrtc::SdpVideoFormat> GetSupportedFormats() const override;
-        std::unique_ptr<webrtc::VideoDecoder> CreateVideoDecoder(const webrtc::SdpVideoFormat& format) override;
+        std::unique_ptr<webrtc::VideoDecoder> Create(const webrtc::Environment& env, const webrtc::SdpVideoFormat& format) override;
 
     private:
         CUcontext context_;

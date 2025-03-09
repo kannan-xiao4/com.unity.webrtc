@@ -234,7 +234,7 @@ namespace webrtc
         return SupportedNvDecoderCodecs(context_);
     }
 
-    std::unique_ptr<VideoDecoder> NvDecoderFactory::CreateVideoDecoder(const SdpVideoFormat& format)
+    std::unique_ptr<VideoDecoder> NvDecoderFactory::Create(const webrtc::Environment& env, const SdpVideoFormat& format)
     {
         return NvDecoder::Create(cricket::CreateVideoCodec(format), context_, profiler_);
     }

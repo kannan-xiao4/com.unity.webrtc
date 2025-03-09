@@ -1,5 +1,6 @@
 #pragma once
 
+#include <api/environment/environment.h>
 #include <api/video_codecs/sdp_video_format.h>
 #include <api/video_codecs/video_decoder_factory.h>
 
@@ -15,7 +16,7 @@ namespace webrtc
     {
     public:
         virtual std::vector<webrtc::SdpVideoFormat> GetSupportedFormats() const override;
-        virtual std::unique_ptr<webrtc::VideoDecoder> CreateVideoDecoder(const webrtc::SdpVideoFormat& format) override;
+        virtual std::unique_ptr<webrtc::VideoDecoder> Create(const webrtc::Environment& env, const webrtc::SdpVideoFormat& format) override;
 
         UnityVideoDecoderFactory(IGraphicsDevice* gfxDevice, ProfilerMarkerFactory* profiler);
         ~UnityVideoDecoderFactory() override;

@@ -136,7 +136,7 @@ namespace webrtc
         do
         {
             nFrameReturnd = m_decoder->Decode(
-                input_image.data(), static_cast<int>(input_image.size()), CUVID_PKT_TIMESTAMP, input_image.Timestamp());
+                input_image.data(), static_cast<int>(input_image.size()), CUVID_PKT_TIMESTAMP, input_image.RtpTimestamp());
         } while (nFrameReturnd == 0);
 
         m_isConfiguredDecoder = true;
