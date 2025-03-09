@@ -4,6 +4,7 @@
 #include <array>
 #include <memory>
 #include <mutex>
+#include <chrono>
 #pragma endregion
 
 #pragma region webrtc headers

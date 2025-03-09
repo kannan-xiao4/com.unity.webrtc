@@ -458,9 +458,11 @@ namespace webrtc
 
         const VulkanTexture2D* vulkanTexture = static_cast<const VulkanTexture2D*>(texture);
         std::unique_lock<std::mutex> lock(m_LastStateMtx);
+        auto now = std::chrono::system_clock::now();
+        auto timeout = now + std::chrono::duration_cast<std::chrono::system_clock::duration>(m_syncTimeout);
 
         bool ret =
-            m_LastStateCond.wait_until(lock, std::chrono::system_clock::now() + m_syncTimeout, [vulkanTexture, this] {
+            m_LastStateCond.wait_until(lock, timeout, [vulkanTexture, this] {
                 return vulkanTexture->currentFrameNumber <= m_LastState.safeFrameNumber;
             });
         return ret;
