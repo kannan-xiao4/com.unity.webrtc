@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.23)
 include(CMakePrintHelpers)
 
 set(CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET
@@ -14,6 +14,11 @@ project(
   LANGUAGES C CXX ASM)
 
 cmake_policy(SET CMP0076 NEW)
+
+# Only interpret if() arguments as variables or keywords when unquoted.
+cmake_policy(SET CMP0054 NEW)
+# MSVC runtime library flags are selected by an abstraction.
+cmake_policy(SET CMP0091 NEW)
 
 # Enable unit testing
 enable_testing()

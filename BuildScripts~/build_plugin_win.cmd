@@ -1,6 +1,6 @@
 @echo off
 
-set LIBWEBRTC_DOWNLOAD_URL=https://github.com/Unity-Technologies/com.unity.webrtc/releases/download/M116/webrtc-win.zip
+set LIBWEBRTC_DOWNLOAD_URL=https://github.com/kannan-xiao4/com.unity.webrtc/releases/download/M124/webrtc-win.zip
 set SOLUTION_DIR=%cd%\Plugin~
 
 echo Download LibWebRTC
@@ -18,4 +18,4 @@ rem This program use CUDA kernel to change the video resolution when using NVIDI
 
 cd %SOLUTION_DIR%
 cmake --preset=x64-windows-msvc
-cmake --build --preset=release-windows-msvc --target=WebRTCPlugin
+cmake --build --preset=debug-windows-msvc --target=WebRTCPlugin
